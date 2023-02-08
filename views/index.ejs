@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <head>
+   
+  </head>
+  <body>
+    <h1>
+        <a href="./index">게시판 로고</a> 
+    </h1>
+    <table border="1"> 
+        <tr>
+            <td>번호</td>
+            <td>제목</td>
+            <td>작성자</td>
+            <td>내용</td>
+            <td>수정</td>
+            <td>삭제</td>
+        </tr>
+        <%
+        var num = 1;
+        for (var i=0; i<data.length; i++){
+            %>
+        <tr>
+            <td><%=num%></td>
+            <td><%=data[i].subject%></td> 
+            <td><%=data[i].writer%></td>
+            <td><%=data[i].content%></td>
+            <td><input type="button" value="수정" onclick="edit('<%=data[i].idx%>')"></td> 
+            <td><input type="button" value="삭제" onclick="del('<%=data[i].idx%>')"></td>
+        </tr>
+    <%
+    num++;
+    }
+    %>
+     
+    </table>
+    <a href="./write">글쓰기</a>
+</body>
+</html>
+
+<script>
+
+function del(id){
+	
+    console.log(id);
+    var aj;
+    function wck(){
+       if(window.XMLHttpRequest){
+              return new XMLHttpRequest();
+          }
+    }
+    function acall(){
+       if(aj.readyState == XMLHttpRequest.DONE && aj.status==200){   
+
+           alert("삭제완료");
+           location.reload();
+    
+       }
+    }
+   
+    var gopage = "./del?id="+id;
+    aj = wck();
+    aj.onreadystatechange = acall;
+    aj.open("get",gopage,true);
+    aj.send();
+}
+
+function edit(id){
+location.href="./update?id="+id;
+
+}
+
+</script>
