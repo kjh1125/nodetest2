@@ -1,12 +1,24 @@
 const mysql = require('mysql');  // mysql 모듈 로드
 
 
-const con = mysql.createConnection({
+// local에서 할 때.
+/* const con = mysql.createConnection({
     host: 'localhost',
     user: 'user',
     password: '1234',
     database: 'sesac'
     });
+*/
+// docker로 올릴 때
+
+const con = mysql.createConnection({
+    host: '192.168.0.104',
+    port: 3306,
+    user: 'user',
+    password: '1234',
+    database: 'sesac',
+    dialect: 'mysql'
+});
 
   
 //방명록 전체 정보 조회
