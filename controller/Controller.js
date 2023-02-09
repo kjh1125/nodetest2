@@ -1,12 +1,28 @@
 const Visitor = require("../model/Visitor");
 
-//방명록 전체 정보 조회
+//방명록 전체 정보와 검색 조회
 exports.get_visitors = (req, res) => {
+    
+   // paging을 위해 count 값 구하기
+   Visitor.get_ct(function( re ) {
+    console.log("ct: ", re);
+    });
+
+    if(req.query.search==undefined){
     Visitor.get_visitors(function( result ) {
-        console.log("result: ", result);
-        console.log("index");
+       // console.log("result: ", result);
+       // console.log("index");
+        
         res.render("index", {data: result});
     });
+    }
+    else{
+        Visitor.get_search(req.query.page, req.query.search, req.query.sel, function( result ) {
+            console.log("result: ", result);
+            res.render("index", {data: result});
+        });
+    }
+
 }
 
 //방명록 단일 정보 조회 (업데이트 뷰)
@@ -28,11 +44,11 @@ exports.insert = (req, res) => {
 }
 
 //방명록 정보 삭제
-exports.delete= (req, res) => {
+exports.delete = (req, res) => {
     //console.log(req) 로 어떤 값으로 오는지 확인.
     Visitor.delete(req.query.id, function(result) {
         console.log( result );
-        res.send( "success Delete!" );
+        res.send( "success Delete!" ); //ajax 사용 시 뭐라도 값을 보내야 ajax에 설정한 alert등이 작동함.
     });
 }
 

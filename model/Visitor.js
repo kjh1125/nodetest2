@@ -2,30 +2,64 @@ const mysql = require('mysql');  // mysql 모듈 로드
 
 
 // local에서 할 때.
-/* const con = mysql.createConnection({
+ const con = mysql.createConnection({
     host: 'localhost',
     user: 'user',
     password: '1234',
     database: 'sesac'
     });
-*/
+
 // docker로 올릴 때
 
-const con = mysql.createConnection({
-    host: '192.168.0.104',
-    port: 3306,
-    user: 'user',
-    password: '1234',
-    database: 'sesac',
-    dialect: 'mysql'
-});
+// const con = mysql.createConnection({
+//     host: '192.168.0.104',
+//     port: 3306,
+//     user: 'user',
+//     password: '1234',
+//     database: 'sesac',
+//     dialect: 'mysql'
+// });
 
-  
 //방명록 전체 정보 조회
 exports.get_visitors = (cb) => {
     // mysql과 질의. query 메서드는 첫번째 인자로 SQL 구문을 받음.
     // 콜백의 rows는 SQL 구문에 해당하는 행을 받음.
-    con.query('select * from nodetest', (err, rows)=> {
+    con.query(`select * from nodetest`, (err, rows)=> {
+        if ( err ) throw err;
+        //console.log( rows ); 
+
+        cb(rows);
+    });
+}
+
+//paging을 위한 ct값 구하기
+exports.get_ct = (cb) => {
+  
+    con.query(`select count(*) as ct from nodetest`, (err, ct)=> {
+        if ( err ) throw err;
+        console.log( ct ); 
+
+        cb(ct);
+    });
+}
+
+
+//방명록 검색 조회
+exports.get_search = (page, search, sel, cb) => {
+    // mysql과 질의. query 메서드는 첫번째 인자로 SQL 구문을 받음.
+    // 콜백의 rows는 SQL 구문에 해당하는 행을 받음.
+    var a ="";
+    if(sel == 1){
+        a = "subject";
+    }
+    else if(sel ==2){
+        a = "writer";
+    }
+    else{
+        a = "content";
+    }
+
+    con.query(`select * from nodetest where ${a} like '%${search}%'`, (err, rows)=> {
         if ( err ) throw err;
         console.log( rows ); 
 
