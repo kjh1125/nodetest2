@@ -6,6 +6,7 @@ exports.get_visitors = (req, res) => {
    // paging을 위해 count 값 구하기
    Visitor.get_ct(function( re ) {
     console.log("ct: ", re);
+
     });
 
     if(req.query.search==undefined){
