@@ -6,7 +6,8 @@ const mysql = require('mysql');  // mysql 모듈 로드
     host: 'localhost',
     user: 'user',
     password: '1234',
-    database: 'sesac'
+    database: 'sesac',
+    multipleStatements : true
     });
 
 // docker로 올릴 때
@@ -24,22 +25,12 @@ const mysql = require('mysql');  // mysql 모듈 로드
 exports.get_visitors = (cb) => {
     // mysql과 질의. query 메서드는 첫번째 인자로 SQL 구문을 받음.
     // 콜백의 rows는 SQL 구문에 해당하는 행을 받음.
-    con.query(`select * from nodetest`, (err, rows)=> {
+
+    con.query(`select * from nodetest order by idx desc limit 0,5 ; select count(*) as ct from nodetest`, (err, rows)=> {
         if ( err ) throw err;
-        //console.log( rows ); 
+       // console.log( rows); 
 
         cb(rows);
-    });
-}
-
-//paging을 위한 ct값 구하기
-exports.get_ct = (cb) => {
-  
-    con.query(`select count(*) as ct from nodetest`, (err, ct)=> {
-        if ( err ) throw err;
-        console.log( ct ); 
-
-        cb(ct);
     });
 }
 
@@ -59,9 +50,19 @@ exports.get_search = (page, search, sel, cb) => {
         a = "content";
     }
 
-    con.query(`select * from nodetest where ${a} like '%${search}%'`, (err, rows)=> {
+    var sql = "";
+    var anum = 5*page-5;
+    
+    if(page==1){
+        sql = `select * from nodetest where ${a} like '%${search}%' order by idx desc limit 0, 5`;
+    }
+    else{
+        sql = `select * from nodetest where ${a} like '%${search}%' order by idx desc limit ${anum}, 5`;
+    }
+    console.log(sql);
+    con.query(`${sql}; select count(*) as ct from nodetest where ${a} like '%${search}%'`, (err, rows)=> {
         if ( err ) throw err;
-        console.log( rows ); 
+       // console.log( rows );
 
         cb(rows);
     });

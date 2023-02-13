@@ -2,25 +2,19 @@ const Visitor = require("../model/Visitor");
 
 //방명록 전체 정보와 검색 조회
 exports.get_visitors = (req, res) => {
-    
-   // paging을 위해 count 값 구하기
-   Visitor.get_ct(function( re ) {
-    console.log("ct: ", re);
-
-    });
 
     if(req.query.search==undefined){
-    Visitor.get_visitors(function( result ) {
-       // console.log("result: ", result);
+    Visitor.get_visitors(function(result) {
+       console.log("result: ", result);
        // console.log("index");
         
-        res.render("index", {data: result});
+        res.render("index", {page:1, sel: 1, search:"", data: result});
     });
     }
     else{
-        Visitor.get_search(req.query.page, req.query.search, req.query.sel, function( result ) {
-            console.log("result: ", result);
-            res.render("index", {data: result});
+        Visitor.get_search(req.query.page, req.query.search, req.query.sel, function(result) {
+            
+            res.render("index", {page: req.query.page, search: req.query.search, sel: req.query.sel, data: result});
         });
     }
 
